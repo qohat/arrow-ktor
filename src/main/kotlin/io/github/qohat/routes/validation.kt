@@ -4,7 +4,6 @@ import arrow.core.*
 import io.github.qohat.IncorrectInput
 import io.github.qohat.service.RegisterUser
 
-
 sealed interface InvalidField {
     val errors: NonEmptyList<String>
     val field: String

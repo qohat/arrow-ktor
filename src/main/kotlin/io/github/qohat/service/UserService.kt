@@ -1,7 +1,6 @@
 package io.github.qohat.service
 
-import arrow.core.Either
-import arrow.core.continuations.either
+import arrow.core.continuations.EffectScope
 import io.github.qohat.DomainError
 import io.github.qohat.repo.UserId
 import io.github.qohat.repo.UserRepo
@@ -23,11 +22,12 @@ fun userService(userRepo: UserRepo) = object : UserService {
         }
 }*/
 
+typealias DomainErrors = EffectScope<DomainError>
+
 object UserService {
-    context(UserRepo)
-    suspend fun register(user: RegisterUser): Either<DomainError, UserId> =
-        either {
-            val (username, email, password) = user.validate().bind()
-            insert(username, email, password).bind()
-        }
+    context(UserRepo, DomainErrors)
+    suspend fun register(user: RegisterUser): UserId {
+        val (username, email, password) = user.validate().bind()
+        return insert(username, email, password).bind()
+    }
 }
