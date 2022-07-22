@@ -14,7 +14,6 @@ import io.ktor.server.routing.*
 import io.ktor.util.pipeline.*
 import kotlinx.serialization.Serializable
 
-
 @Serializable data class UserWrapper<T : Any>(val user: T)
 
 @Serializable
@@ -37,7 +36,7 @@ fun Application.userRoutes() = routing {
         post {
             either<DomainError, UserWrapper<User>> {
                 val (username, email, password) = receiveCatching<UserWrapper<NewUser>>().bind().user
-                val userId = UserService.register(RegisterUser(username, email, password)).bind()
+                val userId = UserService.register(RegisterUser(username, email, password))
                 UserWrapper(User(userId.serial, email, "", username, ""))
             }.respond(HttpStatusCode.Created)
         }
